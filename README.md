@@ -22,6 +22,13 @@ Foo(
 )
 ```
 
+### Options
+
+```
+  -n int
+        indent width (default 2)
+```
+
 ## License
 
 MIT
