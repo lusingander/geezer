@@ -8,7 +8,7 @@ import (
 )
 
 func run() error {
-	return geezer.Exec(os.Stdin, os.Stdout)
+	return geezer.Exec(os.Stdin, os.Stdout, 2)
 }
 
 func main() {

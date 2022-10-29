@@ -8,20 +8,31 @@ import (
 
 func TestExec(t *testing.T) {
 	tests := []struct {
+		w    int
 		s    string
 		want string
 	}{
 		{
+			w:    2,
 			s:    "abcdefg",
 			want: "abcdefg",
 		},
 		{
+			w: 2,
 			s: "Foo(value=1)",
 			want: `Foo(
   value=1
 )`,
 		},
 		{
+			w: 8,
+			s: "Foo(value=1)",
+			want: `Foo(
+        value=1
+)`,
+		},
+		{
+			w: 2,
 			s: "Foo(value=1,name=foobar)",
 			want: `Foo(
   value=1,
@@ -29,6 +40,7 @@ func TestExec(t *testing.T) {
 )`,
 		},
 		{
+			w: 2,
 			s: "Foo(value=1,name=foobar,bar=Bar(id=1))",
 			want: `Foo(
   value=1,
@@ -39,6 +51,7 @@ func TestExec(t *testing.T) {
 )`,
 		},
 		{
+			w: 2,
 			s: "Foo(bar=Bar(baz=Baz{n=1,m=2},qux=Qux(name=qqq,value=[1,2,3])))",
 			want: `Foo(
   bar=Bar(
@@ -59,17 +72,17 @@ func TestExec(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		got := runExec(t, test.s)
+		got := runExec(t, test.s, test.w)
 		if got != test.want {
 			t.Errorf("s=%v, got=%v, want=%v", test.s, got, test.want)
 		}
 	}
 }
 
-func runExec(t *testing.T, s string) string {
+func runExec(t *testing.T, s string, indentWidth int) string {
 	r := strings.NewReader(s)
 	w := &bytes.Buffer{}
-	err := Exec(r, w)
+	err := Exec(r, w, indentWidth)
 	if err != nil {
 		t.Error(err)
 	}

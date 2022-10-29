@@ -11,11 +11,16 @@ var (
 	closingBrackets = []rune{')', ']', '}'}
 )
 
-const indent = 2
-
 type indenter struct {
 	n      int
 	indent string
+	w      int
+}
+
+func newIndenter(w int) *indenter {
+	return &indenter{
+		w: w,
+	}
 }
 
 func (i indenter) get() string {
@@ -33,14 +38,14 @@ func (i *indenter) dec() {
 }
 
 func (i *indenter) update() {
-	i.indent = strings.Repeat(" ", i.n*indent)
+	i.indent = strings.Repeat(" ", i.n*i.w)
 }
 
-func Exec(r io.Reader, w io.Writer) error {
+func Exec(r io.Reader, w io.Writer, indentWidth int) error {
 	br := bufio.NewReader(r)
 	bw := bufio.NewWriter(w)
 
-	ind := &indenter{}
+	ind := newIndenter(indentWidth)
 
 	for {
 		r, _, err := br.ReadRune()
