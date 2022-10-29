@@ -6,6 +6,11 @@ import (
 	"strings"
 )
 
+var (
+	openingBrackets = []rune{'(', '[', '{'}
+	closingBrackets = []rune{')', ']', '}'}
+)
+
 const indent = 2
 
 type indenter struct {
@@ -47,7 +52,7 @@ func Exec(r io.Reader, w io.Writer) error {
 			return err
 		}
 
-		if r == ')' || r == ']' || r == '}' {
+		if isIn(r, closingBrackets) {
 			ind.dec()
 			bw.WriteRune('\n')
 			bw.WriteString(ind.get())
@@ -60,10 +65,19 @@ func Exec(r io.Reader, w io.Writer) error {
 			bw.WriteString(ind.get())
 		}
 
-		if r == '(' || r == '[' || r == '{' {
+		if isIn(r, openingBrackets) {
 			ind.inc()
 			bw.WriteRune('\n')
 			bw.WriteString(ind.get())
 		}
 	}
+}
+
+func isIn(r rune, rs []rune) bool {
+	for _, rr := range rs {
+		if r == rr {
+			return true
+		}
+	}
+	return false
 }
