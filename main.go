@@ -9,12 +9,13 @@ import (
 )
 
 var (
-	indentWidth = flag.Int("n", 2, "indent width")
+	indentWidth    = flag.Int("n", 2, "indent width")
+	withSpaceRunes = []rune{'='}
 )
 
 func run() error {
 	flag.Parse()
-	return geezer.Exec(os.Stdin, os.Stdout, *indentWidth)
+	return geezer.Exec(os.Stdin, os.Stdout, *indentWidth, withSpaceRunes)
 }
 
 func main() {

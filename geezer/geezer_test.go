@@ -9,6 +9,7 @@ import (
 func TestExec(t *testing.T) {
 	tests := []struct {
 		w    int
+		rs   []rune
 		s    string
 		want string
 	}{
@@ -51,6 +52,18 @@ func TestExec(t *testing.T) {
 )`,
 		},
 		{
+			w:  2,
+			rs: []rune{'='},
+			s:  "Foo(value=1,name=foobar,bar=Bar(id=1))",
+			want: `Foo(
+  value = 1,
+  name = foobar,
+  bar = Bar(
+    id = 1
+  )
+)`,
+		},
+		{
 			w: 2,
 			s: "Foo(bar=Bar(baz=Baz{n=1,m=2},qux=Qux(name=qqq,value=[1,2,3])))",
 			want: `Foo(
@@ -72,17 +85,17 @@ func TestExec(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		got := runExec(t, test.s, test.w)
+		got := runExec(t, test.s, test.w, test.rs)
 		if got != test.want {
 			t.Errorf("s=%v, got=%v, want=%v", test.s, got, test.want)
 		}
 	}
 }
 
-func runExec(t *testing.T, s string, indentWidth int) string {
+func runExec(t *testing.T, s string, indentWidth int, withSpaceRunes []rune) string {
 	r := strings.NewReader(s)
 	w := &bytes.Buffer{}
-	err := Exec(r, w, indentWidth)
+	err := Exec(r, w, indentWidth, withSpaceRunes)
 	if err != nil {
 		t.Error(err)
 	}

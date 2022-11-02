@@ -41,7 +41,7 @@ func (i *indenter) update() {
 	i.indent = strings.Repeat(" ", i.n*i.w)
 }
 
-func Exec(r io.Reader, w io.Writer, indentWidth int) error {
+func Exec(r io.Reader, w io.Writer, indentWidth int, withSpaceRunes []rune) error {
 	br := bufio.NewReader(r)
 	bw := bufio.NewWriter(w)
 
@@ -63,7 +63,13 @@ func Exec(r io.Reader, w io.Writer, indentWidth int) error {
 			bw.WriteString(ind.get())
 		}
 
-		bw.WriteRune(r)
+		if isIn(r, withSpaceRunes) {
+			bw.WriteRune(' ')
+			bw.WriteRune(r)
+			bw.WriteRune(' ')
+		} else {
+			bw.WriteRune(r)
+		}
 
 		if r == ',' {
 			bw.WriteRune('\n')
