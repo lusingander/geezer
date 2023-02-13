@@ -54,12 +54,24 @@ func TestExec(t *testing.T) {
 		{
 			w:  2,
 			rs: []rune{'='},
-			s:  "Foo(value=1,name=foobar,bar=Bar(id=1))",
+			s:  "Foo(value:1,name=foobar,bar=Bar(id:1))",
 			want: `Foo(
-  value = 1,
+  value:1,
   name = foobar,
   bar = Bar(
-    id = 1
+    id:1
+  )
+)`,
+		},
+		{
+			w:  2,
+			rs: []rune{'=', ':'},
+			s:  "Foo(value:1,name=foobar,bar=Bar(id:1))",
+			want: `Foo(
+  value : 1,
+  name = foobar,
+  bar = Bar(
+    id : 1
   )
 )`,
 		},

@@ -10,8 +10,8 @@ import (
 )
 
 var (
-	indentWidth    = flag.Int("n", 2, "indent width")
-	withSpaceRunes = []rune{'='}
+	indentWidth = flag.Int("n", 2, "indent width")
+	withSpace   = flag.String("s", "=", "characters with spaces before and after")
 )
 
 func run() error {
@@ -19,7 +19,7 @@ func run() error {
 	if *indentWidth < 0 {
 		return fmt.Errorf("invalid indent width: %v", *indentWidth)
 	}
-	return geezer.Exec(os.Stdin, os.Stdout, *indentWidth, withSpaceRunes)
+	return geezer.Exec(os.Stdin, os.Stdout, *indentWidth, []rune(*withSpace))
 }
 
 func main() {

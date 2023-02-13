@@ -27,6 +27,20 @@ Foo(
 ```
   -n int
         indent width (default 2)
+  -s string
+        characters with spaces before and after (default "=")
+```
+
+For exapmle:
+
+```
+$ echo "foo:{bar:{n:1,m:2}}" | go run main.go -n 1 -s ":" 
+foo : {
+ bar : {
+  n : 1,
+  m : 2
+ }
+}
 ```
 
 ## License
