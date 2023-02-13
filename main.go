@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -15,6 +16,9 @@ var (
 
 func run() error {
 	flag.Parse()
+	if *indentWidth < 0 {
+		return fmt.Errorf("invalid indent width: %v", *indentWidth)
+	}
 	return geezer.Exec(os.Stdin, os.Stdout, *indentWidth, withSpaceRunes)
 }
 
