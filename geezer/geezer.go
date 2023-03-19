@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"io"
 	"strings"
+	"unicode"
 )
 
 var (
@@ -47,8 +48,17 @@ func Exec(r io.Reader, w io.Writer, indentWidth int, withSpaceRunes []rune) erro
 
 	ind := newIndenter(indentWidth)
 
+	skipWs := false
+
 	for {
 		r, _, err := br.ReadRune()
+
+		if skipWs {
+			if unicode.IsSpace(r) {
+				continue
+			}
+			skipWs = false
+		}
 
 		if err == io.EOF {
 			return bw.Flush()
@@ -74,6 +84,7 @@ func Exec(r io.Reader, w io.Writer, indentWidth int, withSpaceRunes []rune) erro
 		if r == ',' {
 			bw.WriteRune('\n')
 			bw.WriteString(ind.get())
+			skipWs = true
 		}
 
 		if isIn(r, openingBrackets) {

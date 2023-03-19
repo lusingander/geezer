@@ -42,6 +42,14 @@ func TestExec(t *testing.T) {
 		},
 		{
 			w: 2,
+			s: "Foo(value=1, name=foobar)",
+			want: `Foo(
+  value=1,
+  name=foobar
+)`,
+		},
+		{
+			w: 2,
 			s: "Foo(value=1,name=foobar,bar=Bar(id=1))",
 			want: `Foo(
   value=1,
