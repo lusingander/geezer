@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"strings"
 	"testing"
+
+	"github.com/lusingander/sasa"
 )
 
 func TestExec(t *testing.T) {
@@ -21,93 +23,102 @@ func TestExec(t *testing.T) {
 		{
 			w: 2,
 			s: "Foo(value=1)",
-			want: `Foo(
-  value=1
-)`,
+			want: `
+			|Foo(
+			|  value=1
+			|)`,
 		},
 		{
 			w: 8,
 			s: "Foo(value=1)",
-			want: `Foo(
-        value=1
-)`,
+			want: `
+			|Foo(
+			|        value=1
+			|)`,
 		},
 		{
 			w: 2,
 			s: "Foo(value=1,name=foobar)",
-			want: `Foo(
-  value=1,
-  name=foobar
-)`,
+			want: `
+			|Foo(
+			|  value=1,
+			|  name=foobar
+			|)`,
 		},
 		{
 			w: 2,
 			s: "Foo(value=1, name=foobar)",
-			want: `Foo(
-  value=1,
-  name=foobar
-)`,
+			want: `
+			|Foo(
+			|  value=1,
+			|  name=foobar
+			|)`,
 		},
 		{
 			w: 2,
 			s: "Foo(value=1,name=foobar,bar=Bar(id=1))",
-			want: `Foo(
-  value=1,
-  name=foobar,
-  bar=Bar(
-    id=1
-  )
-)`,
+			want: `
+			|Foo(
+			|  value=1,
+			|  name=foobar,
+			|  bar=Bar(
+			|    id=1
+			|  )
+			|)`,
 		},
 		{
 			w:  2,
 			rs: []rune{'='},
 			s:  "Foo(value:1,name=foobar,bar=Bar(id:1))",
-			want: `Foo(
-  value:1,
-  name = foobar,
-  bar = Bar(
-    id:1
-  )
-)`,
+			want: `
+			|Foo(
+			|  value:1,
+			|  name = foobar,
+			|  bar = Bar(
+			|    id:1
+			|  )
+			|)`,
 		},
 		{
 			w:  2,
 			rs: []rune{'=', ':'},
 			s:  "Foo(value:1,name=foobar,bar=Bar(id:1))",
-			want: `Foo(
-  value : 1,
-  name = foobar,
-  bar = Bar(
-    id : 1
-  )
-)`,
+			want: `
+			|Foo(
+			|  value : 1,
+			|  name = foobar,
+			|  bar = Bar(
+			|    id : 1
+			|  )
+			|)`,
 		},
 		{
 			w: 2,
 			s: "Foo(bar=Bar(baz=Baz{n=1,m=2},qux=Qux(name=qqq,value=[1,2,3])))",
-			want: `Foo(
-  bar=Bar(
-    baz=Baz{
-      n=1,
-      m=2
-    },
-    qux=Qux(
-      name=qqq,
-      value=[
-        1,
-        2,
-        3
-      ]
-    )
-  )
-)`,
+			want: `
+			|Foo(
+			|  bar=Bar(
+			|    baz=Baz{
+			|      n=1,
+			|      m=2
+			|    },
+			|    qux=Qux(
+			|      name=qqq,
+			|      value=[
+			|        1,
+			|        2,
+			|        3
+			|      ]
+			|    )
+			|  )
+			|)`,
 		},
 	}
 	for _, test := range tests {
 		got := runExec(t, test.s, test.w, test.rs)
-		if got != test.want {
-			t.Errorf("s=%v, got=%v, want=%v", test.s, got, test.want)
+		want := sasa.TrimMargin(test.want)
+		if got != want {
+			t.Errorf("s=%v, got=%v, want=%v", test.s, got, want)
 		}
 	}
 }
