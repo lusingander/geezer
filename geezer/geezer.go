@@ -3,6 +3,7 @@ package geezer
 import (
 	"bufio"
 	"io"
+	"slices"
 	"strings"
 	"unicode"
 )
@@ -67,13 +68,13 @@ func Exec(r io.Reader, w io.Writer, indentWidth int, withSpaceRunes []rune) erro
 			return err
 		}
 
-		if isIn(r, closingBrackets) {
+		if slices.Contains(closingBrackets, r) {
 			ind.dec()
 			bw.WriteRune('\n')
 			bw.WriteString(ind.get())
 		}
 
-		if isIn(r, withSpaceRunes) {
+		if slices.Contains(withSpaceRunes, r) {
 			bw.WriteRune(' ')
 			bw.WriteRune(r)
 			bw.WriteRune(' ')
@@ -87,19 +88,10 @@ func Exec(r io.Reader, w io.Writer, indentWidth int, withSpaceRunes []rune) erro
 			skipWs = true
 		}
 
-		if isIn(r, openingBrackets) {
+		if slices.Contains(openingBrackets, r) {
 			ind.inc()
 			bw.WriteRune('\n')
 			bw.WriteString(ind.get())
 		}
 	}
-}
-
-func isIn(r rune, rs []rune) bool {
-	for _, rr := range rs {
-		if r == rr {
-			return true
-		}
-	}
-	return false
 }
