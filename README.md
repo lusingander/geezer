@@ -6,8 +6,6 @@ Command line application to format data containing parentheses
 
 `$ go install github.com/lusingander/geezer@latest`
 
-(require Go 1.19+)
-
 ## Usage
 
 ```sh
