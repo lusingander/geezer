@@ -115,11 +115,13 @@ func TestExec(t *testing.T) {
 		},
 	}
 	for _, test := range tests {
-		got := runExec(t, test.s, test.w, test.rs)
-		want := sasa.TrimMargin(test.want)
-		if got != want {
-			t.Errorf("s=%v, got=%v, want=%v", test.s, got, want)
-		}
+		t.Run(test.s, func(t *testing.T) {
+			got := runExec(t, test.s, test.w, test.rs)
+			want := sasa.TrimMargin(test.want)
+			if got != want {
+				t.Errorf("got=%v, want=%v", got, want)
+			}
+		})
 	}
 }
 
