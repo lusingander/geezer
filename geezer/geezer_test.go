@@ -119,7 +119,7 @@ func TestExec(t *testing.T) {
 			got := runExec(t, test.s, test.w, test.rs)
 			want := sasa.TrimMargin(test.want)
 			if got != want {
-				t.Errorf("got=%v, want=%v", got, want)
+				t.Errorf("\ngot:\n%v\nwant:\n%v", formatExecOutput(got), formatExecOutput(want))
 			}
 		})
 	}
@@ -133,4 +133,18 @@ func runExec(t *testing.T, s string, indentWidth int, withSpaceRunes []rune) str
 		t.Error(err)
 	}
 	return w.String()
+}
+
+func formatExecOutput(s string) string {
+	lines := strings.Split(s, "\n")
+	for i := range lines {
+		lines[i] = replacePrefixAndSuffix(lines[i], " ", "␣")
+	}
+	return strings.Join(lines, "\n")
+}
+
+func replacePrefixAndSuffix(s, old, new string) string {
+	s = sasa.ReplacePrefix(s, old, new)
+	s = sasa.ReplaceSuffix(s, old, new)
+	return s
 }
