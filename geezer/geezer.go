@@ -49,17 +49,11 @@ func Exec(r io.Reader, w io.Writer, indentWidth int, withSpaceRunes []rune) erro
 
 	ind := newIndenter(indentWidth)
 
+	wsBuf := make([]rune, 0)
 	skipWs := false
 
 	for {
 		r, _, err := br.ReadRune()
-
-		if skipWs {
-			if unicode.IsSpace(r) {
-				continue
-			}
-			skipWs = false
-		}
 
 		if err == io.EOF {
 			return bw.Flush()
@@ -68,11 +62,25 @@ func Exec(r io.Reader, w io.Writer, indentWidth int, withSpaceRunes []rune) erro
 			return err
 		}
 
+		if unicode.IsSpace(r) {
+			wsBuf = append(wsBuf, r)
+			continue
+		}
+
 		if slices.Contains(closingBrackets, r) {
 			ind.dec()
 			bw.WriteRune('\n')
 			bw.WriteString(ind.get())
+			skipWs = true
 		}
+
+		if !skipWs {
+			for _, ws := range wsBuf {
+				bw.WriteRune(ws)
+			}
+		}
+		wsBuf = make([]rune, 0)
+		skipWs = false
 
 		if slices.Contains(withSpaceRunes, r) {
 			bw.WriteRune(' ')
@@ -92,6 +100,7 @@ func Exec(r io.Reader, w io.Writer, indentWidth int, withSpaceRunes []rune) erro
 			ind.inc()
 			bw.WriteRune('\n')
 			bw.WriteString(ind.get())
+			skipWs = true
 		}
 	}
 }
